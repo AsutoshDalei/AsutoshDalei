@@ -1,5 +1,5 @@
 # 💫 About Me:
-🌎 I’m currently working on AI for vision.<br>👯 I’m looking to collaborate on data-driven climate change projects.<br>🤝 I’m looking for help on environmental modeling and sustainability initiatives.<br>🌱 I’m currently learning the fundamentals of Data Scince at UMD and building cool AI projects.<br>💬 Ask me about the time I built a model to predict the stock market. Nope, no profits yet. Yes, still working on it.<br>⚡ Fun fact. I’m passionate about build accessible AI! also, I can go hyper-focused on demand :X
+🌎 Currently exploring Data Science at UMD, College Park. <br>🚗 Passionate about applying ML in Automotive Tech.<br>🤝 Open to collaborations on AI focussed environmental modeling and sustainability initiatives.<br>🌱 Expanding my skills in Vision and Language focussed AI.<br>⚡ Fun fact. I’ve got a patent filed for predicting vehicle battery health over the air, using AI. 
 
 
 ## 🌐 Socials:
