@@ -1,6 +1,5 @@
 # 💫 About Me:
-🌎 Currently pursing Data Science at UMD, College Park. <br>🚗 Passionate about applying ML in Automotive Tech.<br>🤝 Open to collaborations on AI focussed environmental modeling and sustainability initiatives.<br>🌱 Expanding my skills in Vision and Language focussed AI.<br>⚡ Fun fact. I’ve got a patent filed for predicting vehicle battery health over the air, using AI. 
-
+🌎 Currently pursing Data Science at UMD, College Park. <br>🚗 Passionate about applying ML in overlooked industries.<br>🤝 Open to collaborations on AI focussed environmental modeling and sustainability initiatives.<br>🌱 Expanding my skills in Vision and Language focussed AI.<br>⚡ I am presently interning at Nokia in AI.
 
 ## 🌐 Socials:
 [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/asutosh.dalei) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/asutosh-dalei2212) 
