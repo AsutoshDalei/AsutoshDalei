@@ -12,7 +12,8 @@
 		$header = $('#header'),
 		$footer = $('#footer'),
 		$main = $('#main'),
-		$main_articles = $main.children('article');
+		$main_articles = $main.children('article'),
+		$bg = $('#bg');
 
 	// Breakpoints.
 		breakpoints({
@@ -392,10 +393,12 @@
 				$main_articles.hide();
 
 			// Initial article.
-				if (location.hash != ''
-				&&	location.hash != '#')
 					$window.on('load', function() {
 						$main._show(location.hash.substr(1), true);
 					});
+
+			// Random background.
+				if (Math.random() > 0.5)
+					$bg.addClass('bg-02');
 
 })(jQuery);

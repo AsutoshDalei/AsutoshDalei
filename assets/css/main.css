@@ -1165,6 +1165,10 @@ input, select, textarea {
 			z-index: 1;
 		}
 
+		#bg.bg-02:after {
+			background-image: url("../../images/bg02.jpg");
+		}
+
 		body.is-article-visible #bg:after {
 			-moz-transform: scale(1.0825);
 			-webkit-transform: scale(1.0825);
