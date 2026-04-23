@@ -18,7 +18,7 @@
 
   /* ── Configuration ─────────────────────────────────────── */
   var API_KEY        = '__OPENROUTER_API_KEY__';  // injected by GitHub Actions at deploy time
-  var MODEL          = 'google/gemma-3-27b-it:free';
+  var MODEL          = 'google/gemma-4-26b-a4b-it:free';
   var MAX_TOKENS     = 180;
   var INPUT_MAX_CHARS = 300;
   var SESSION_LIMIT  = 15;   // messages per browser tab
