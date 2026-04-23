@@ -17,7 +17,7 @@
   'use strict';
 
   /* ── Configuration ─────────────────────────────────────── */
-  var API_KEY        = '__OPENROUTER_API_KEY__';  // injected by GitHub Actions at deploy time
+  var CHAT_API_ENDPOINT = '__CHAT_API_ENDPOINT__'; // must point to a secured backend proxy
   var MODEL          = 'google/gemma-3-27b-it:free';
   var MAX_TOKENS     = 250;
   var INPUT_MAX_CHARS = 300;
@@ -168,6 +168,11 @@
 
     updateCounter();
     addMessage('assistant', 'Hi! I\'m here to answer questions about Asutosh\'s background, skills, and experience. What would you like to know?');
+
+    if (!isBackendConfigured()) {
+      addMessage('system-notice', 'Chat is temporarily unavailable while secure server configuration is being completed.');
+      setInputDisabled(true);
+    }
   });
 
   /* ── Panel toggle ───────────────────────────────────────── */
@@ -207,6 +212,10 @@
     return INJECTION_PATTERNS.some(function (pattern) { return pattern.test(text); });
   }
 
+  function isBackendConfigured() {
+    return !!CHAT_API_ENDPOINT && CHAT_API_ENDPOINT !== '__CHAT_API_ENDPOINT__';
+  }
+
   function isRateLimited() {
     var now = Date.now();
     var timestamps = JSON.parse(localStorage.getItem('chat_ts') || '[]');
@@ -236,6 +245,11 @@
     var text = input.value.trim();
 
     if (!text || isLoading) return;
+
+    if (!isBackendConfigured()) {
+      addMessage('error', 'Error: Chat backend is not configured.');
+      return;
+    }
 
     if (text.length > INPUT_MAX_CHARS) {
       addMessage('system-notice', 'Message too long — please keep it under ' + INPUT_MAX_CHARS + ' characters.');
@@ -273,7 +287,7 @@
     callOpenRouter(text);
   }
 
-  /* ── OpenRouter API call ────────────────────────────────── */
+  /* ── Secure backend API call ────────────────────────────── */
   function callOpenRouter(userText) {
     isLoading = true;
     setInputDisabled(true);
@@ -287,18 +301,16 @@
 
     var messages_payload = [{ role: 'system', content: SYSTEM_PROMPT }].concat(trimmedHistory);
 
-    fetch('https://openrouter.ai/api/v1/chat/completions', {
+    fetch(CHAT_API_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + API_KEY,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://asutoshdalei.github.io',
-        'X-Title': 'Asutosh Dalei Portfolio'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: MAX_TOKENS,
-        messages: messages_payload
+        maxTokens: MAX_TOKENS,
+        messages: messages_payload,
+        client: 'portfolio-chat-v1'
       })
     })
     .then(function (res) {
