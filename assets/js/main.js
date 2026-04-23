@@ -73,6 +73,15 @@
 		// Methods.
 			$main._show = function(id, initial) {
 
+				if (!id || id === '#')
+					return;
+
+				if (id.charAt(0) === '#')
+					id = id.substr(1);
+
+				if (!id)
+					return;
+
 				var $article = $main_articles.filter('#' + id);
 
 				// No such article? Bail.
