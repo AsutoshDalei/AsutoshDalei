@@ -7,7 +7,7 @@
     2. Input length cap          — max 300 characters per message
     3. Session message limit     — max 15 messages per browser tab (sessionStorage)
     4. Rate limiting             — max 10 messages per 5-minute window (localStorage)
-    5. OpenRouter controls       — max_tokens: 250 per call; spending cap set in dashboard
+    5. OpenRouter controls       — max_tokens: 180 per call; spending cap set in dashboard
     6. Prompt injection filter   — blocks common jailbreak patterns before they reach the API
     7. Conversation history cap  — only last 6 messages sent per request (limits token bloat)
     8. Duplicate message block   — same message cannot be sent twice in a row
@@ -17,9 +17,9 @@
   'use strict';
 
   /* ── Configuration ─────────────────────────────────────── */
-  var CHAT_API_ENDPOINT = '__CHAT_API_ENDPOINT__'; // must point to a secured backend proxy
+  var API_KEY        = '__OPENROUTER_API_KEY__';  // injected by GitHub Actions at deploy time
   var MODEL          = 'google/gemma-3-27b-it:free';
-  var MAX_TOKENS     = 250;
+  var MAX_TOKENS     = 180;
   var INPUT_MAX_CHARS = 300;
   var SESSION_LIMIT  = 15;   // messages per browser tab
   var RATE_LIMIT_COUNT = 10; // messages per rate window
@@ -169,10 +169,6 @@
     updateCounter();
     addMessage('assistant', 'Hi! I\'m here to answer questions about Asutosh\'s background, skills, and experience. What would you like to know?');
 
-    if (!isBackendConfigured()) {
-      addMessage('system-notice', 'Chat is temporarily unavailable while secure server configuration is being completed.');
-      setInputDisabled(true);
-    }
   });
 
   /* ── Panel toggle ───────────────────────────────────────── */
@@ -212,10 +208,6 @@
     return INJECTION_PATTERNS.some(function (pattern) { return pattern.test(text); });
   }
 
-  function isBackendConfigured() {
-    return !!CHAT_API_ENDPOINT && CHAT_API_ENDPOINT !== '__CHAT_API_ENDPOINT__';
-  }
-
   function isRateLimited() {
     var now = Date.now();
     var timestamps = JSON.parse(localStorage.getItem('chat_ts') || '[]');
@@ -245,11 +237,6 @@
     var text = input.value.trim();
 
     if (!text || isLoading) return;
-
-    if (!isBackendConfigured()) {
-      addMessage('error', 'Error: Chat backend is not configured.');
-      return;
-    }
 
     if (text.length > INPUT_MAX_CHARS) {
       addMessage('system-notice', 'Message too long — please keep it under ' + INPUT_MAX_CHARS + ' characters.');
@@ -287,10 +274,17 @@
     callOpenRouter(text);
   }
 
-  /* ── Secure backend API call ────────────────────────────── */
+  /* ── OpenRouter API call ────────────────────────────────── */
   function callOpenRouter(userText) {
     isLoading = true;
     setInputDisabled(true);
+
+    if (!API_KEY || API_KEY === '__OPENROUTER_API_KEY__') {
+      addMessage('error', 'Error: Chat configuration is missing. Please try again later.');
+      isLoading = false;
+      setInputDisabled(isSessionLimitReached());
+      return;
+    }
 
     conversationHistory.push({ role: 'user', content: userText });
 
@@ -301,16 +295,18 @@
 
     var messages_payload = [{ role: 'system', content: SYSTEM_PROMPT }].concat(trimmedHistory);
 
-    fetch(CHAT_API_ENDPOINT, {
+    fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Authorization': 'Bearer ' + API_KEY,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://asutoshdalei.github.io',
+        'X-Title': 'Asutosh Dalei Portfolio'
       },
       body: JSON.stringify({
         model: MODEL,
-        maxTokens: MAX_TOKENS,
-        messages: messages_payload,
-        client: 'portfolio-chat-v1'
+        max_tokens: MAX_TOKENS,
+        messages: messages_payload
       })
     })
     .then(function (res) {

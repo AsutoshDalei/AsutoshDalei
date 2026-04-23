@@ -1,44 +1,42 @@
-# Chat Security Notes
+# Chat Security Notes (GitHub Pages Only)
 
-This portfolio is hosted on GitHub Pages (static hosting).  
-Static frontend code is public, so API keys must never be embedded in JavaScript.
+This site is deployed as static frontend code on GitHub Pages.  
+Because of this, any API key used directly from browser JavaScript is eventually discoverable.
 
-## Current Safe Design
+## Current Mode
 
-- `assets/js/chat.js` calls a backend endpoint via `CHAT_API_ENDPOINT`.
-- If no endpoint is configured, chat is automatically disabled.
-- GitHub Actions only injects the endpoint URL (from repo variable), not any secret.
+- `assets/js/chat.js` calls OpenRouter directly from the browser.
+- The key is injected during GitHub Actions deploy using `secrets.OPENROUTER_API_KEY`.
+- This setup is functional but not fully secure against determined scraping/abuse.
 
-## Required Backend Controls
+## Least-Risk Controls Implemented
 
-Your backend proxy (Cloudflare Worker / Vercel Function / FastAPI / etc.) should enforce:
+1. **Dedicated key**
+   - Use a key only for this portfolio (never reuse development/personal keys).
 
-1. **Server-side API key usage only**
-   - Keep OpenRouter key in backend environment variable.
-   - Never return the key to clients.
+2. **Usage limits in code**
+   - Fixed model in frontend.
+   - Low `max_tokens` per response to limit spend.
 
-2. **Strict origin allowlist**
-   - Only accept requests from `https://asutoshdalei.github.io`.
-   - Return `403` for other origins.
+3. **Frontend anti-abuse controls**
+   - Per-session message cap.
+   - Local rate limiting.
+   - Duplicate-message blocking.
+   - Prompt-injection pattern blocking.
 
-3. **Per-IP rate limiting**
-   - Example: 10 requests / 5 min, with temporary blocks on bursts.
+## Required OpenRouter Dashboard Controls
 
-4. **Bot protection**
-   - Add Cloudflare Turnstile or hCaptcha verification before proxying to model API.
+1. **Hard spend cap**
+   - Set strict monthly limit for this key.
 
-5. **Input validation**
-   - Max input size.
-   - Block malformed payloads and non-JSON requests.
+2. **Low rate limits**
+   - Keep conservative request/token limits.
 
-6. **Cost safeguards**
-   - Enforce max tokens and model allowlist on backend regardless of client payload.
+3. **Monitoring and rotation**
+   - Monitor usage regularly.
+   - Rotate/revoke key immediately on suspicious spikes.
 
-7. **Monitoring**
-   - Log request metadata (no sensitive user content if you want privacy-first).
-   - Alert on traffic spikes and repeated abuse patterns.
+## Important Limitation
 
-## GitHub Setup
-
-- Set repository variable `CHAT_API_ENDPOINT` to your backend URL.
-- Do not add `OPENROUTER_API_KEY` to frontend build steps.
+Without a backend proxy, this cannot be made non-leakable.  
+These controls reduce blast radius but do not eliminate key exposure risk.
