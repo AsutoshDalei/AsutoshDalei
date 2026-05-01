@@ -279,7 +279,7 @@
     isLoading = true;
     setInputDisabled(true);
 
-    if (!API_KEY || API_KEY === '__OPENROUTER_API_KEY__') {
+      if (!API_KEY || /^__.*__$/.test(API_KEY)) {
       addMessage('error', 'Error: Chat configuration is missing. Please try again later.');
       isLoading = false;
       setInputDisabled(isSessionLimitReached());
