@@ -34,7 +34,7 @@
     'Asutosh Dalei is a Data Scientist and AI Engineer based in the Washington DC area.\n' +
     'He is currently pursuing a Master\'s in Data Science at the University of Maryland,\n' +
     'College Park, while working part-time as an AI Intern at Nokia in Sunnyvale, CA.\n' +
-    'He has 2.5+ years of industry experience, a published research paper in Nature\n' +
+    'He has 4+ years of industry experience, a published research paper in Nature\n' +
     'Scientific Reports, and a granted patent in AI — both firsts he is proud of.\n' +
     '\n' +
     '## CURRENT ROLE — Nokia (Autonomous Network Fabric Intern, Sunnyvale CA)\n' +
