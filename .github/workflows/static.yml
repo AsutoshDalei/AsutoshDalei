@@ -31,6 +31,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Inject OpenRouter API key into chat script
+        if: false  # disabled — chat feature paused for API key security
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
